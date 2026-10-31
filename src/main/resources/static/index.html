@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Módulo 40 | Spring Boot</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #10231c; color: #163329; font-family: system-ui, sans-serif; }
+    main { width: 100%; max-width: 660px; padding: clamp(24px, 5vw, 48px); border-radius: 22px; background: #f7faf6; }
+    .tag { font-size: 13px; font-weight: 700; color: #39733c; letter-spacing: 2px; }
+    h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.1; margin: 18px 0; }
+    p { line-height: 1.7; }
+    label { display: block; margin-top: 28px; font-weight: 600; }
+    input, button { font: inherit; padding: 13px 16px; border-radius: 8px; margin-top: 10px; }
+    input { width: 100%; border: 1px solid #a9bdad; }
+    button { border: 0; background: #2e713c; color: white; cursor: pointer; }
+    button:disabled { opacity: .6; }
+    #resultado { background: #e4eee2; padding: 16px; border-radius: 8px; min-height: 60px; }
+    footer { border-top: 1px solid #d4ded0; margin-top: 32px; padding-top: 18px; font-size: 13px; }
+    a { color: #276436; }
+  </style>
+</head>
+<body>
+<main>
+  <span class="tag">EBAC · BACK-END JAVA</span>
+  <h1>Meu primeiro projeto<br>Spring Boot.</h1>
+  <p>Aplicação do módulo 40, criada com Maven e Spring Web a partir do Spring Initializr.</p>
+  <form id="formulario">
+    <label for="nome">Como você se chama?</label>
+    <input id="nome" name="nome" placeholder="Digite seu nome" maxlength="100" autocomplete="given-name">
+    <button type="submit">Testar saudação</button>
+  </form>
+  <p id="resultado" role="status" aria-live="polite">Envie seu nome para testar a comunicação com o servidor Java.</p>
+  <p><a href="/api/saudacao">Ver resposta da API em JSON</a></p>
+  <footer>Lázaro Rodrigues Pereira · Exercício do módulo 40</footer>
+</main>
+<script>
+  document.querySelector('#formulario').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const button = event.currentTarget.querySelector('button');
+    const result = document.querySelector('#resultado');
+    button.disabled = true;
+    try {
+      const nome = document.querySelector('#nome').value.trim();
+      const response = await fetch('/api/saudacao?nome=' + encodeURIComponent(nome));
+      if (!response.ok) throw new Error('Falha na requisição');
+      const data = await response.json();
+      result.textContent = data.mensagem;
+    } catch (error) {
+      result.textContent = 'Não foi possível consultar o servidor. Tente novamente.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
